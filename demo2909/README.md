@@ -48,6 +48,7 @@ Content-Type: application/json
     "role": "ADMIN"
 }
 ```
+![alt text](images/image-2.png)
 
 #### 2. Login
 ```http
@@ -59,6 +60,7 @@ Content-Type: application/json
     "password": "admin123"
 }
 ```
+![alt text](images/image-3.png)
 
 ### Protected Endpoints
 
@@ -72,19 +74,20 @@ Content-Type: application/json
 GET /api/users
 Authorization: Bearer <token>
 ```
+![alt text](images/image-4.png)
 
 #### 2. Get User by ID
 ```http
 GET /api/users/{id}
 Authorization: Bearer <token>
 ```
-
+![alt text](images/image-5.png)
 #### 3. Delete User (ADMIN only)
 ```http
 DELETE /api/users/{id}
 Authorization: Bearer <token>
 ```
-
+![alt text](images/image-6.png)
 ### Blog Endpoints
 
 #### 1. Create Blog
@@ -98,6 +101,8 @@ Content-Type: application/json
     "content": "Blog content here"
 }
 ```
+![alt text](images/image-7.png)
+![alt text](images/image-8.png)
 
 #### 2. Get All Blogs
 ```http
