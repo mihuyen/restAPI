@@ -1,43 +1,51 @@
-# Spring Boot JWT Authentication Demo
+# Dự án Demo Spring Boot JWT Authentication
 
-## Project Overview
-This project demonstrates a secure REST API implementation using Spring Boot with JWT (JSON Web Token) authentication and role-based authorization (ADMIN/USER).
+## Tổng quan dự án
+Dự án này là một bài tập minh họa việc xây dựng REST API sử dụng Spring Boot với cơ chế xác thực JWT (JSON Web Token) và phân quyền theo vai trò (Role-based Authorization: ADMIN/USER).
 
-## Features
-- User authentication with JWT
-- Role-based authorization (ADMIN/USER roles)
-- CRUD operations for users and blogs
-- Secured endpoints with Spring Security
-- Password encryption using BCrypt
+## Tính năng
+- Đăng ký và Đăng nhập sử dụng JWT.
+- Phân quyền người dùng (ADMIN/USER).
+- Các thao tác CRUD cho User và Blog.
+- Bảo mật các endpoint bằng Spring Security.
+- Mã hóa mật khẩu sử dụng BCrypt.
+- **Quyền hạn đặc biệt**:
+  - ADMIN: Có toàn quyền, đặc biệt là quyền xóa User.
+  - USER: Chỉ có quyền xem và cập nhật (sửa/xóa) Blog của chính mình.
+- **Giao diện Frontend đơn giản**:
+  - Trang đăng nhập/đăng ký.
+  - Dashboard quản lý Blog.
 
-## Tech Stack
-- Spring Boot 3.x
+## Công nghệ sử dụng
+- Spring Boot 3.5.6
 - Spring Security
 - JSON Web Token (JWT)
 - Spring Data JPA
-- H2 Database
+- H2 Database (Database nội bộ trong bộ nhớ cho mục đích demo)
 - Maven
 
-## Getting Started
+## Hướng dẫn cài đặt và chạy
 
-### Prerequisites
-- JDK 21
+### Yêu cầu
+- JDK 17 (hoặc mới hơn)
 - Maven 3.6+
-- Postman (for testing APIs)
+- Postman (để test API) hoặc cURL
 
-### Running the Application
-1. Clone the repository
-2. Run the application:
+### Chạy ứng dụng
+1. Mở terminal tại thư mục gốc của dự án.
+2. Chạy lệnh sau:
 ```bash
 mvn spring-boot:run
 ```
-The application will start on `http://localhost:8080`
+3. Ứng dụng sẽ khởi chạy tại:
+   - Frontend: `http://localhost:8080` (Tự động chuyển hướng đến trang đăng nhập hoặc dashboard)
+   - API Base URL: `http://localhost:8080/api`
 
-## API Documentation
+## Tài liệu API
 
-### Authentication Endpoints
+### Endpoint Xác thực (Authentication)
 
-#### 1. Register User
+#### 1. Đăng ký (Register)
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -48,9 +56,8 @@ Content-Type: application/json
     "role": "ADMIN"
 }
 ```
-![alt text](images/image-2.png)
 
-#### 2. Login
+#### 2. Đăng nhập (Login)
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -60,148 +67,64 @@ Content-Type: application/json
     "password": "admin123"
 }
 ```
-![alt text](images/image-3.png)
+*Response trả về `token`. Sử dụng token này cho các request tiếp theo.*
 
-### Protected Endpoints
+### Endpoint cho User
 
-> Note: All protected endpoints require JWT token in Authorization header:
-> `Authorization: Bearer <your_jwt_token>`
-
-### User Endpoints
-
-#### 1. Get All Users
+#### 1. Lấy danh sách User
 ```http
 GET /api/users
-Authorization: Bearer <token>
+Authorization: Bearer <your_jwt_token>
 ```
-![alt text](images/image-4.png)
 
-#### 2. Get User by ID
-```http
-GET /api/users/{id}
-Authorization: Bearer <token>
-```
-![alt text](images/image-5.png)
-#### 3. Delete User (ADMIN only)
+#### 2. Xóa User (Chỉ ADMIN)
 ```http
 DELETE /api/users/{id}
-Authorization: Bearer <token>
+Authorization: Bearer <your_jwt_token>
 ```
-![alt text](images/image-6.png)
-### Blog Endpoints
 
-#### 1. Create Blog
+### Endpoint cho Blog
+
+#### 1. Tạo Blog mới
 ```http
 POST /api/blogs
-Authorization: Bearer <token>
+Authorization: Bearer <your_jwt_token>
 Content-Type: application/json
 
 {
-    "title": "My Blog Title",
-    "content": "Blog content here"
+    "title": "Tiêu đề Blog",
+    "content": "Nội dung Blog"
 }
 ```
-![alt text](images/image-7.png)
-![alt text](images/image-8.png)
 
-#### 2. Get All Blogs
+#### 2. Lấy danh sách Blog
 ```http
 GET /api/blogs
-Authorization: Bearer <token>
+Authorization: Bearer <your_jwt_token>
 ```
+*Lưu ý: ADMIN sẽ thấy toàn bộ blog. USER chỉ thấy blog của chính mình.*
 
-#### 3. Get Blog by ID
-```http
-GET /api/blogs/{id}
-Authorization: Bearer <token>
-```
-
-#### 4. Update Blog (Owner only)
+#### 3. Cập nhật Blog (Chỉ chủ sở hữu hoặc ADMIN)
 ```http
 PUT /api/blogs/{id}
-Authorization: Bearer <token>
+Authorization: Bearer <your_jwt_token>
 Content-Type: application/json
 
 {
-    "title": "Updated Title",
-    "content": "Updated content"
+    "title": "Tiêu đề mới",
+    "content": "Nội dung mới"
 }
 ```
 
-#### 5. Delete Blog (Owner only)
+#### 4. Xóa Blog (Chỉ chủ sở hữu hoặc ADMIN)
 ```http
 DELETE /api/blogs/{id}
-Authorization: Bearer <token>
+Authorization: Bearer <your_jwt_token>
 ```
 
-## Security Rules
-
-### Role-Based Access Control
-1. ADMIN Role:
-   - Can perform all operations
-   - Only ADMIN can delete users
-
-2. USER Role:
-   - Can view all blogs
-   - Can create new blogs
-   - Can only edit/delete their own blogs
-   - Cannot delete users
-
-### Authentication
-- All endpoints except `/api/auth/**` require authentication
-- JWT token must be included in Authorization header
-- Token expires after 1 hour
-
-## Database
-
-The application uses H2 in-memory database with the following configuration:
+## Cấu hình Database
+Ứng dụng sử dụng H2 Database lưu trong bộ nhớ.
 - Console URL: `http://localhost:8080/h2-console`
 - JDBC URL: `jdbc:h2:mem:testdb`
 - Username: `sa`
 - Password: `password`
-
-## Testing with Postman
-
-1. Register a new admin user:
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
--H "Content-Type: application/json" \
--d "{\"username\":\"admin\",\"password\":\"admin123\",\"role\":\"ADMIN\"}"
-```
-
-2. Register a regular user:
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
--H "Content-Type: application/json" \
--d "{\"username\":\"user\",\"password\":\"user123\",\"role\":\"USER\"}"
-```
-
-3. Login to get JWT token:
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
--H "Content-Type: application/json" \
--d "{\"username\":\"admin\",\"password\":\"admin123\"}"
-```
-
-4. Use the token in subsequent requests:
-```bash
-curl -X GET http://localhost:8080/api/users \
--H "Authorization: Bearer <your_jwt_token>"
-```
-
-## Common Issues and Solutions
-
-1. 403 Forbidden Error:
-   - Check if you're using the correct JWT token
-   - Verify you have the required role for the operation
-   - Ensure the token hasn't expired
-
-2. 401 Unauthorized Error:
-   - Make sure you've included the Authorization header
-   - Check if the token format is correct (Bearer prefix)
-   - Verify your login credentials
-
-3. Token Issues:
-   - Tokens expire after 1 hour
-   - Login again to get a new token
-   - Include 'Bearer ' prefix in Authorization header

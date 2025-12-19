@@ -36,6 +36,12 @@ public class BlogService {
         return blogRepository.findAll();
     }
 
+    public List<Blog> getBlogsByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return blogRepository.findByUserId(user.getId());
+    }
+
     public Blog getBlogById(Long id) {
         return blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));

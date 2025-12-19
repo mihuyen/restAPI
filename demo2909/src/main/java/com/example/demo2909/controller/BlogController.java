@@ -21,11 +21,19 @@ public class BlogController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Blog>> getAllBlogs() {
-        return ResponseEntity.ok(blogService.getAllBlogs());
+    public ResponseEntity<List<Blog>> getAllBlogs(Authentication authentication) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            return ResponseEntity.ok(blogService.getAllBlogs());
+        } else {
+            return ResponseEntity.ok(blogService.getBlogsByUsername(authentication.getName()));
+        }
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @blogService.isOwner(#id, authentication.name)")
     public ResponseEntity<Blog> getBlogById(@PathVariable Long id) {
         return ResponseEntity.ok(blogService.getBlogById(id));
     }
@@ -36,13 +44,13 @@ public class BlogController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("@blogService.isOwner(#id, authentication.name)")
+    @PreAuthorize("hasRole('ADMIN') or @blogService.isOwner(#id, authentication.name)")
     public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody BlogRequest blogRequest) {
         return ResponseEntity.ok(blogService.updateBlog(id, blogRequest));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("@blogService.isOwner(#id, authentication.name)")
+    @PreAuthorize("hasRole('ADMIN') or @blogService.isOwner(#id, authentication.name)")
     public ResponseEntity<?> deleteBlog(@PathVariable Long id) {
         blogService.deleteBlog(id);
         return ResponseEntity.ok().build();

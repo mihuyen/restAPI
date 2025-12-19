@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Start App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="checkAuth()">
+    <nav class="navbar">
+        <h1>Blog System</h1>
+        <button onclick="logout()" class="btn-logout">Logout</button>
+    </nav>
+
+    <div class="container">
+        <!-- Create Blog Section -->
+        <div class="card">
+            <h3>Create New Blog</h3>
+            <form id="createBlogForm">
+                <div class="form-group">
+                    <input type="text" id="blogTitle" placeholder="Blog Title" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="blogContent" placeholder="Blog Content" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn">Post Blog</button>
+            </form>
+        </div>
+
+        <!-- Blog List Section -->
+        <div id="blogList" class="blog-container">
+            <!-- Blogs will be loaded here -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
